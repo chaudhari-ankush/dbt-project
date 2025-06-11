@@ -1,0 +1,67 @@
+{
+    "family": "dbt-core-api",
+    "networkMode": "awsvpc",
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "512",
+    "memory": "1024",
+    "containerDefinitions": [
+        {
+            "name": "dbt-core-api",
+            "image": "<your-account-id>.dkr.ecr.<your-region>.amazonaws.com/dbt-core-api:latest",
+            "portMappings": [
+                {
+                    "containerPort": 8000,
+                    "protocol": "tcp"
+                }
+            ],
+            "environment": [
+                {
+                    "name": "SPARK_HOST",
+                    "value": "<your-emr-master-node>"
+                },
+                {
+                    "name": "SPARK_PORT",
+                    "value": "10000"
+                },
+                {
+                    "name": "SPARK_USER",
+                    "value": "<your-spark-user>"
+                },
+                {
+                    "name": "SPARK_SCHEMA",
+                    "value": "default"
+                },
+                {
+                    "name": "AWS_DEFAULT_REGION",
+                    "value": "<your-region>"
+                }
+            ],
+            "secrets": [
+                {
+                    "name": "SPARK_PASSWORD",
+                    "valueFrom": "arn:aws:ssm:<your-region>:<your-account-id>:parameter/dbt/spark-password"
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/dbt-core-api",
+                    "awslogs-region": "<your-region>",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            },
+            "healthCheck": {
+                "command": [
+                    "CMD-SHELL",
+                    "curl -f http://localhost:8000/health || exit 1"
+                ],
+                "interval": 30,
+                "timeout": 5,
+                "retries": 3,
+                "startPeriod": 60
+            }
+        }
+    ]
+} 
