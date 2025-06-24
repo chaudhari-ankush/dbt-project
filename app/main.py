@@ -48,46 +48,51 @@ async def health_check() -> Dict[str, str]:
 async def run_dbt_command(command: DBTCommand, background_tasks: BackgroundTasks) -> DBTResponse:
     try:
         logger.info(f"Received dbt command: {command.command}")
-        
-        # Initialize dbt runner
         dbt = dbtRunner()
-        
-        # Prepare command arguments
         args = [command.command]
         if command.args:
             args.extend(command.args)
-            
-        # Add optional parameters
         if command.profiles_dir:
             args.extend(["--profiles-dir", command.profiles_dir])
         if command.project_dir:
             args.extend(["--project-dir", command.project_dir])
+            # Check for dbt_project.yml
+            dbt_project_path = os.path.join(command.project_dir, "dbt_project.yml")
+            if not os.path.exists(dbt_project_path):
+                logger.error(f"dbt_project.yml not found in {command.project_dir}")
+                return DBTResponse(
+                    success=False,
+                    message=f"dbt_project.yml not found in {command.project_dir}",
+                    error="dbt_project.yml missing"
+                )
         if command.target:
             args.extend(["--target", command.target])
         if command.vars:
             args.extend(["--vars", json.dumps(command.vars)])
-            
         logger.info(f"Executing dbt command with args: {args}")
-        
-        # Run dbt command
         res: dbtRunnerResult = dbt.invoke(args)
-        
         if res.success:
             logger.info("DBT command executed successfully")
             return DBTResponse(
                 success=True,
                 message="DBT command executed successfully",
-                results=res.results
+                results=getattr(res, "result", None)
             )
         else:
-            logger.error(f"DBT command failed: {res.results}")
+            logger.error(f"DBT command failed: {getattr(res, 'result', None)}")
             return DBTResponse(
                 success=False,
                 message="DBT command failed",
-                results=res.results,
-                error=str(res.results)
+                results=getattr(res, "result", None),
+                error=str(getattr(res, "result", None))
             )
-            
+    except AttributeError as e:
+        logger.error(f"AttributeError: {str(e)}. dbtRunnerResult attributes: {dir(res) if 'res' in locals() else 'res not defined'}")
+        return DBTResponse(
+            success=False,
+            message="Error executing DBT command (attribute error)",
+            error=f"{str(e)}. dbtRunnerResult attributes: {dir(res) if 'res' in locals() else 'res not defined'}"
+        )
     except Exception as e:
         logger.error(f"Error executing DBT command: {str(e)}")
         return DBTResponse(
@@ -134,6 +139,15 @@ async def run_dbt_model(
             args.extend(["--profiles-dir", profiles_dir])
         if project_dir:
             args.extend(["--project-dir", project_dir])
+            # Check for dbt_project.yml
+            dbt_project_path = os.path.join(project_dir, "dbt_project.yml")
+            if not os.path.exists(dbt_project_path):
+                logger.error(f"dbt_project.yml not found in {project_dir}")
+                return DBTResponse(
+                    success=False,
+                    message=f"dbt_project.yml not found in {project_dir}",
+                    error="dbt_project.yml missing"
+                )
         if target:
             args.extend(["--target", target])
         logger.info(f"Executing dbt run with args: {args}")
@@ -143,16 +157,23 @@ async def run_dbt_model(
             return DBTResponse(
                 success=True,
                 message=f"DBT model '{model}' run successfully",
-                results=res.results
+                results=getattr(res, "result", None)
             )
         else:
-            logger.error(f"DBT model run failed: {res.results}")
+            logger.error(f"DBT model run failed: {getattr(res, 'result', None)}")
             return DBTResponse(
                 success=False,
                 message=f"DBT model '{model}' run failed",
-                results=res.results,
-                error=str(res.results)
+                results=getattr(res, "result", None),
+                error=str(getattr(res, "result", None))
             )
+    except AttributeError as e:
+        logger.error(f"AttributeError: {str(e)}. dbtRunnerResult attributes: {dir(res) if 'res' in locals() else 'res not defined'}")
+        return DBTResponse(
+            success=False,
+            message="Error running DBT model (attribute error)",
+            error=f"{str(e)}. dbtRunnerResult attributes: {dir(res) if 'res' in locals() else 'res not defined'}"
+        )
     except Exception as e:
         logger.error(f"Error running DBT model: {str(e)}")
         return DBTResponse(
