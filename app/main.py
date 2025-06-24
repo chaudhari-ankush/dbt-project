@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Query
 from dbt.cli.main import dbtRunner, dbtRunnerResult
 import os
 import logging
@@ -115,6 +115,51 @@ async def get_available_commands() -> Dict[str, List[str]]:
             "show"
         ]
     }
+
+@app.get("/dbt/run-model", response_model=DBTResponse)
+async def run_dbt_model(
+    model: str = Query(..., description="Name of the dbt model to run"),
+    project_dir: Optional[str] = Query(None, description="Path to dbt project"),
+    profiles_dir: Optional[str] = Query(None, description="Path to profiles directory"),
+    target: Optional[str] = Query(None, description="dbt target profile")
+) -> DBTResponse:
+    """
+    Run a specific dbt model using a GET request.
+    """
+    try:
+        logger.info(f"Received request to run model: {model}")
+        dbt = dbtRunner()
+        args = ["run", "--select", model]
+        if profiles_dir:
+            args.extend(["--profiles-dir", profiles_dir])
+        if project_dir:
+            args.extend(["--project-dir", project_dir])
+        if target:
+            args.extend(["--target", target])
+        logger.info(f"Executing dbt run with args: {args}")
+        res: dbtRunnerResult = dbt.invoke(args)
+        if res.success:
+            logger.info("DBT model run successfully")
+            return DBTResponse(
+                success=True,
+                message=f"DBT model '{model}' run successfully",
+                results=res.results
+            )
+        else:
+            logger.error(f"DBT model run failed: {res.results}")
+            return DBTResponse(
+                success=False,
+                message=f"DBT model '{model}' run failed",
+                results=res.results,
+                error=str(res.results)
+            )
+    except Exception as e:
+        logger.error(f"Error running DBT model: {str(e)}")
+        return DBTResponse(
+            success=False,
+            message="Error running DBT model",
+            error=str(e)
+        )
 
 if __name__ == "__main__":
     import uvicorn
