@@ -23,15 +23,19 @@ RUN mkdir -p /app/dbt_project
 COPY app/ ./app/
 COPY dbt_project.yml /app/dbt_project/
 COPY profiles.yml /app/dbt_project/
+COPY . /app
 
 # Set environment variables
 ENV PYTHONPATH=/app \
     DBT_PROFILES_DIR=/app/dbt_project \
     PYTHONUNBUFFERED=1 \
-    AWS_DEFAULT_REGION=us-east-1
+    AWS_DEFAULT_REGION=us-east-2
 
 # Expose the port the app runs on
 EXPOSE 8000
 
 # Command to run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"] 
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# Verify files
+RUN ls -l /app 
