@@ -1,3 +1,4 @@
+# DBT profiles.yml for Spark connection. Ensure environment variables are set for SPARK_HOST, SPARK_PORT, SPARK_USER, SPARK_SCHEMA.
 default:
   target: dev
   outputs:

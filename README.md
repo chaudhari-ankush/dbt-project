@@ -105,3 +105,16 @@ aws ecs create-service \
 - The example model generates sample data using PostgreSQL's generate_series function
 - Database credentials are stored securely in AWS Systems Manager Parameter Store
 - The Fargate task is configured with 256 CPU units (0.25 vCPU) and 512MB memory 
+
+# DBT Project Structure
+
+This project follows the standard DBT structure:
+
+- `models/`: Your DBT models (SQL files that build tables/views)
+- `analyses/`: (Optional) For ad-hoc analysis SQL files
+- `tests/`: (Optional) For custom data tests
+- `seeds/`: (Optional) For CSV files to load static data
+- `macros/`: (Optional) For custom Jinja macros
+- `snapshots/`: (Optional) For snapshotting slowly changing data
+- `dbt_project.yml`: Main project config
+- `profiles.yml`: Database connection config (usually in ~/.dbt/) 
