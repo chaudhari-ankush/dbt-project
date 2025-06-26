@@ -22,6 +22,7 @@ athena:
       region_name: us-east-2
       database: test
       schema: test
+      data_catalog: AwsDataCatalog
       aws_access_key_id: "{{ env_var('AWS_ACCESS_KEY_ID') }}"
       aws_secret_access_key: "{{ env_var('AWS_SECRET_ACCESS_KEY') }}"
       # Or use IAM roles if running on ECS 
