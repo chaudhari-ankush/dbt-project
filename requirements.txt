@@ -1,4 +1,4 @@
 fastapi
 uvicorn
 dbt-core
-dbt-spark 
+dbt-athena-community 

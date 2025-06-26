@@ -11,4 +11,18 @@ default:
       schema: "{{ env_var('SPARK_SCHEMA') }}"
       threads: 4
       connect_timeout: 60
-      retry_all: true 
+      retry_all: true
+
+athena:
+  target: dev
+  outputs:
+    dev:
+      type: athena
+      s3_staging_dir: s3://your-athena-query-results/
+      region_name: us-east-1
+      database: your_athena_database
+      schema: your_schema  # often 'default'
+      aws_access_key_id: <your-access-key>
+      aws_secret_access_key: <your-secret-key>
+      # Or use environment variables for credentials
+      # Or use IAM roles if running on ECS 
