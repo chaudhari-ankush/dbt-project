@@ -1,0 +1,40 @@
+{
+  "family": "fastapi-dbt-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "containerDefinitions": [
+    {
+      "name": "fastapi-dbt",
+      "image": "<your-ecr-repo-url>:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8000,
+          "hostPort": 8000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {"name": "SPARK_HOST", "value": "<your-spark-host>"},
+        {"name": "SPARK_PORT", "value": "<your-spark-port>"},
+        {"name": "SPARK_USER", "value": "<your-spark-user>"},
+        {"name": "SPARK_SCHEMA", "value": "<your-spark-schema>"}
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/fastapi-dbt",
+          "awslogs-region": "us-east-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ],
+  "executionRoleArn": "<your-ecs-task-execution-role-arn>",
+  "taskRoleArn": "<your-ecs-task-role-arn>",
+  "tags": [
+    {"key": "Project", "value": "fastapi-dbt"}
+  ]
+} 

@@ -1,0 +1,4 @@
+fastapi
+uvicorn
+dbt-core
+dbt-spark 
