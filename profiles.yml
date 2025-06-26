@@ -18,8 +18,8 @@ athena:
   outputs:
     dev:
       type: athena
-      s3_staging_dir: s3://your-athena-query-results/
-      region_name: us-east-1
+      s3_staging_dir: s3://dbt-core-athena-test-bucket/
+      region_name: us-east-2
       database: your_athena_database
       schema: your_schema  # often 'default'
       aws_access_key_id: <your-access-key>
