@@ -1,2 +1,2 @@
 -- Example DBT model
-select * from your_athena_table limit 10 
+select * from test.customers limit 10 

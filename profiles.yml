@@ -18,11 +18,9 @@ athena:
   outputs:
     dev:
       type: athena
-      s3_staging_dir: s3://dbt-core-athena-test-bucket/
+      s3_staging_dir: s3://dbt-core-athena-test-bucket/dbt-output/
       region_name: us-east-2
-      database: your_athena_database
-      schema: your_schema  # often 'default'
-      aws_access_key_id: <your-access-key>
-      aws_secret_access_key: <your-secret-key>
+      database: test
+      schema: test
       # Or use environment variables for credentials
       # Or use IAM roles if running on ECS 
