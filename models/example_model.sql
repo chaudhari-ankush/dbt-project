@@ -1,2 +1,3 @@
 -- Example DBT model
-select * from test.customers limit 10 
+select * from customers limit 10 
+
