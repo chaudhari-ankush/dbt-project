@@ -20,6 +20,7 @@ athena:
       type: athena
       s3_staging_dir: s3://dbt-core-athena-test-bucket/dbt-output/
       region_name: us-east-2
+      database: test
       schema: test
       data_catalog: AwsDataCatalog
       aws_access_key_id: "{{ env_var('AWS_ACCESS_KEY_ID') }}"
