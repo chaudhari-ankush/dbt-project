@@ -1,4 +1,7 @@
 fastapi
 uvicorn
 dbt-core
-dbt-athena-community 
+dbt-spark
+boto3
+pyspark
+requests 

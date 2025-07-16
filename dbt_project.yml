@@ -1,8 +1,8 @@
-name: 'my_dbt_project'
+name: 'spark_iceberg_project'
 version: '1.0.0'
 config-version: 2
 
-profile: 'athena'
+profile: 'spark_glue_iceberg'
 
 model-paths: ["models"]
 analysis-paths: ["analyses"]
@@ -13,5 +13,5 @@ snapshot-paths: ["snapshots"]
 
 target-path: "target"
 clean-targets:
-    - "target"
-    - "dbt_packages" 
+  - "target"
+  - "dbt_packages" 

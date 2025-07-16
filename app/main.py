@@ -3,10 +3,10 @@ import subprocess
 
 app = FastAPI()
 
-def run_dbt_command(args):
+def run_dbt_iceberg():
     try:
         result = subprocess.run(
-            ["dbt"] + args,
+            ["dbt", "run", "--select", "sample_iceberg_model"],
             capture_output=True,
             text=True,
             check=True
@@ -19,14 +19,6 @@ def run_dbt_command(args):
 def health():
     return {"status": "ok"}
 
-@app.get("/dbt/run")
-def dbt_run():
-    return run_dbt_command(["run"])
-
-@app.get("/dbt/debug")
-def dbt_debug():
-    return run_dbt_command(["debug"])
-
-@app.get("/dbt/docs")
-def dbt_docs():
-    return run_dbt_command(["docs", "generate"]) 
+@app.post("/dbt/run-iceberg")
+def dbt_run_iceberg():
+    return run_dbt_iceberg() 
