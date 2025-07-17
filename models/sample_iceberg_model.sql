@@ -1,4 +1,4 @@
 -- Sample Iceberg dbt model
 {{ config(materialized='table') }}
 
-SELECT * FROM glue_catalog.sample_db.sample_iceberg_table LIMIT 10 
+SELECT * FROM glue_catalog.bronze.aa_asset_mgr_supplier LIMIT 10 
