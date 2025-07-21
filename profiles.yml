@@ -5,7 +5,7 @@ spark_glue_iceberg:
       type: spark
       method: thrift
       host: "44.223.27.73"
-      port: "10000"
+      port: 10000
       user: "hadoop"
       schema: "default"
       threads: 4
