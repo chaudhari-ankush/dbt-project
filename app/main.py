@@ -19,6 +19,6 @@ def run_dbt_iceberg():
 def health():
     return {"status": "ok"}
 
-@app.post("/dbt/run-iceberg")
+@app.get("/dbt/run-iceberg")
 def dbt_run_iceberg():
     return run_dbt_iceberg() 
