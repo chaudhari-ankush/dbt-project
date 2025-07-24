@@ -4,8 +4,8 @@ spark_glue_iceberg:
     dev:
       type: spark
       method: thrift
-      host: "ec2-18-212-249-194.compute-1.amazonaws.com"
-      port: 10001
+      host: "ec2-34-203-225-227.compute-1.amazonaws.com"
+      port: 10000
       user: "hadoop"
       schema: "default"
       threads: 4
